@@ -54,7 +54,7 @@ module MetaTags
     def render_title(tags)
       title = meta_tags.extract_full_title
       normalized_meta_tags[:title] = title
-      tags << ContentTag.new(:title, :content => title) if title.present?
+      tags << ContentTag.new(:title, :content => title, :itemprop => "name") if title.present?
     end
 
     # Renders meta tag with normalization (should have a corresponding normalize_
@@ -110,7 +110,11 @@ module MetaTags
         href = meta_tags.extract(tag_name)
         if href.present?
           @normalized_meta_tags[tag_name] = href
-          tags << Tag.new(:link, :rel => tag_name, :href => href)
+          if tag_name.eql?("canonical")
+            tags << Tag.new(:link, :rel => tag_name, :href => href, :itemprop => "url")
+          else
+            tags << Tag.new(:link, :rel => tag_name, :href => href)
+          end
         end
       end
     end
